@@ -1,5 +1,17 @@
-Lo que he hecho ha sido blah, blah, blah
+Este trabajo final de máster para la Universidad de La Rioja trata de la detección automática de oscilaciones en protuberancias solares.
 
+SoSoft y TrackFil son programas ya desarrollados: https://github.com/HELIO-HFC/SoSoft & https://github.com/HELIO-HFC/TrackFil.
+
+Estos dos programas trabajan individualmente, por tanto mi aportación ha sido la modificación de estos para que, entre otras cosas, funcionen 
+conjuntamente.
+
+Archivo Modificado: SoSoft/FIL/FINALSSW/SoSoft.pro
+
+Otra aportación ha sido del desarrollo de un programa que calcula los centros de masas de los filamentos que considera iguales en cada una
+de las imágenes (ExOs): 
+
+Archivo: SoSoft/FIL/FINALSSW/ExOs.pro
+		      
 
 ####################### README #############################
 
