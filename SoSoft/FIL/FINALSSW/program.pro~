@@ -1,0 +1,145 @@
+
+pathfits='/scratch/angelv/MISAEL_TFM/SoSoft-master/TEST-DATA/gong2.nso.edu/HA/haf/201511/20151111/'
+pathimages='/scratch/angelv/MISAEL_TFM/SoSoft-master/TEST-IMAGES/'
+window,0,xsize=1200,ysize=600
+
+!p.charsize=0.9
+;onlyreproduce='n'
+;if onlyreproduce eq 'y' then goto,labelreproduce
+
+;n=file_search(pathfits+'*Bh*fits',count=count)
+n=file_search(pathfits+'*Lh*fits',count=count)
+
+xrange=[0,600]
+yrange=[-500,100]
+
+;count=20
+
+skip=1
+
+nelem=floor((count-1)/skip)
+
+;running differences step
+delta=3
+
+
+;im=fltarr(count,1024,1024)
+;clnim=fltarr(nelem,2048,2048)
+;imbin=fltarr(nelem,1024,2048)
+;rd=fltarr(nelem-1,2048,2048)
+
+!p.multi=[0,2,1]
+
+globalstrfil = []
+globalidx = 0
+
+;for ind=0,nelem-1 do begin
+for ind=0,2 do begin
+   
+   mreadfits,n(ind*skip),index,data,header=header,silent=silent
+   print,"what is header", header
+   index2map,index,data,map
+;reduce the size of the map
+   std_image=congrid(map.data,1024,1024)
+   
+   if ind eq 0 then mhacln=replicate(map,nelem)
+   if ind eq 0 then mhabin=replicate(map,nelem)
+
+   bin_image = EGSO_SFC_FILAMENT(std_image,DISPLAY=display,OBSKEY='',FLATCLEAN=flatclean,LINECLEAN=lineclean,DUSTCLEAN=dustclean,CLEANIM=cleanim)
+;im(ind,*,*)=std_image(*,*)
+   mhacln(ind).data=congrid(cleanim,2048,2048,/interp)
+   mhabin(ind).data=congrid(bin_image,2048,2048,/interp)
+;clnim(ind,*,*)=cleanim(*,*)
+;imbin(ind,*,*)=bin_image(*,*)
+;map.data=congrid(cleanim,2048,2048,/interp)
+;map.dx=map.dx*2
+;map.dy=map.dy*2
+;****************************
+   dateobs=map.time
+   cdelt=map.dx*2.d0            ; el dos es por que reducimos la resolucion a la mitad
+   indices=where(bin_image ge 1)
+   str = EGSO_SFC_FIL_DESCRIBE(indices,dateobs,IMAGE=cleanim,CDELT=cdelt)
+;help,str,/st
+
+   plot_map,mhacln(ind),xrange=xrange,yrange=yrange
+   oplot,str.GRAV_C_ARCX,str.GRAV_C_ARCY,psym=1
+;for i=0,n_elements(str.BRARC_X_LL)-1 do begin
+;   oplot,[str.BRARC_X_LL(i),str.BRARC_Y_LL(i)],[str.BRARC_X_LL(i),str.BRARC_Y_UR(i)]
+;endfor
+
+   plot_map,mhabin(ind),xrange=xrange,yrange=yrange
+;;;oplot,str.GRAV_C_ARCX,str.GRAV_C_ARCY,psym=1
+;****************************
+
+;rd(ind,*,*)=bin_image(*,*)
+
+;plot_image,std_image
+;plot_image,bin_image;,/noerase
+
+;rd(ind,*,*)=imbin(ind+,*,*)-imbin(ind,*,*)
+
+; if ind ge delta then begin
+;; plot_image,cleanim;reform(clnim(ind,*,*))
+;; plot_image,bin_image           ;reform(imbin(ind,*,*))
+; if ind ge delta then rd=bin_image-oldim
+; if ind ge delta then plot_image,rd;reform(rd(ind,*,*))
+; endif
+; oldim=bin_image
+
+   counter,ind,io
+   write_png,pathimages+'frames_'+io+'.png',tvrd()
+
+
+;;;;;;
+;let's create fil_data to feed track_fil
+;;;;;
+   strfil = []
+
+   help,str
+   for inde=0,n_elements(str)-1 do begin
+      fil = {fil_id:globalidx, $
+             track_id:globalidx,$
+             date_obs: index.date_obs,$
+             jdint: fix(index.j2000),$
+             jdfrac: index.j2000 - fix(index.j2000), $
+             ske_length_deg: str[ind].ske_len_deg,$
+             ske_cc: str[ind].chain_code_ske,$
+             ske_cc_x_pix: str[ind].cod_ske_pix_x,$
+             ske_cc_y_pix: str[ind].cod_ske_pix_y,$
+             cdelt1: map.dx,$
+             cdelt2: map.dy,$
+             center_x: index.fndlmbxc,$
+             center_y: index.fndlmbyc,$
+             r_sun:   map.rsun,$
+             phenom: 0,$
+             ref_id: 0 }
+
+      globalidx = globalidx + 1
+      strfil = [strfil,fil]
+   endfor
+   
+   globalstrfil = [globalstrfil,strfil]
+   
+   
+endfor
+
+
+;labelreproduce:
+
+;for ind=0,nelem-2 do begin
+
+; rd(ind,*,*)=imbin(ind+1,*,*)-imbin(ind,*,*)
+
+
+; plot_image,reform(clnim(ind,*,*))
+; plot_image,reform(imbin(ind,*,*))
+; plot_image,reform(rd(ind,*,*))
+;counter,ind,io
+;write_png,pathimages+'frames_'+io+'.png',tvrd()
+
+;endfor
+
+
+
+stop
+end

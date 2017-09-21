@@ -1,0 +1,27 @@
+FUNCTION FREQUENCY,image
+window,1,xs=1024,ys=1024
+nul=where(image LE 0.)
+nnul=where(image GT 0.)
+im2=image
+;im2[nul]=MEDIAN(image[nnul])
+tvscl,im2
+fftim=fft(im2)
+sfftim=shift(fftim,513,513) 
+tvscl,ALOG(ABS(sfftim)^2)
+filter=bytarr(1024,1024)+1b
+fsiz=300
+wf=WHERE(filter)
+
+  FILT_SUBS_Y = wf / 1024
+  FILT_SUBS_X = wf MOD 1024
+  FILT_DIST   = SQRT((FILT_SUBS_X-(1024-0.5)/2)^2 + (FILT_SUBS_Y-(1024-0.5)/2)^2) 
+  FILT        = WHERE(FILT_DIST LE fsiz)
+
+tsfftim = sfftim
+tsfftim[FILT]=0.;MEDIAN(sfftim)
+tvscl,tsfftim
+infft=FFT(tsfftim, /INVERSE)
+tvscl,infft
+RETURN,infft
+END
+

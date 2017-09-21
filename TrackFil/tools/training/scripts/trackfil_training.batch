@@ -1,0 +1,36 @@
+;Run tracking code 
+
+;Input parameters
+
+APPEND = 1
+
+;Minimal length of skeleton to process.
+lmin = 5.0
+
+;time range to process
+starttime = '2002-02-01T00:00:00'
+endtime   = '2002-06-30T23:59:59'
+
+;hfc login
+db = 'hfc1test'
+host = 'helio-fc1.obspm.fr'
+
+;Paths
+output_dir = '../products'
+src_dir = '../../../src'
+
+pathsep = PATH_SEP(/SEARCH_PATH)
+!PATH = expand_path('+../src') + pathsep + !PATH
+!PATH = expand_path('+../src/aux') + pathsep + !PATH
+!PATH = expand_path('+'+src_dir) + pathsep + !PATH
+!PATH = expand_path('+'+src_dir+'/aux') + pathsep + !PATH
+!PATH = expand_path('+'+src_dir+'/classes') + pathsep + !PATH
+
+@compile_trackfil
+.compile button
+
+trackfil_training,starttime,endtime, $
+				  lmin=lmin, $
+			 	  output_dir=output_dir,$
+			 	  database=db,host=host, $
+			 	  APPEND=APPEND

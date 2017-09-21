@@ -1,0 +1,72 @@
+           DESCRIPTION OF STRUCTURE FIELDS (FILAMENT OBJECTS)
+           **************************************************
+
+
+  - After segmentation of solar H-alpha images, each filament parameter is stored in a
+  structure. The first filament (or blob) detected on the first image of the set will be 
+  stored in str[0]. The data collected from the header of the FITS image are stored in
+  str[*].srce. 
+  
+  - For each blob, a pruned skeleton is computed. From the skeleton, the length (degrees), 
+  the center (heliographic coord.) are calculated. The external boundary is computed from 
+  the blob and its chain code is given.  
+
+  - The chain code informations allow to rebuilt the external boundary and skeleton of   
+  the shape, from the first point given in arcsecs (origin: bottom left) and from
+  a list of directions represented by numbers. Directions numbers are:
+          3   2   1
+          4   X   0
+          5   6   7 
+  Ex: 
+  chain code:  100776
+  representation:
+                     OOO 
+                    O   O
+                         O
+                         O 
+  
+  - The bounding rectangle array gives the extremities coord. of the blob (arcsec)                      
+  - The strength factor is an index which is computed from the image statistics
+  and from the mean intensity of the blob.(from 1 to 10)
+
+  - Curvature is computed only for filaments which elongatedness is
+    greater than one.
+
+
+  FIELD TYPE AND DESCRIPTION
+  **************************
+
+  FIELD NAME                 TYPE       DESCRIPTION     
+
+  str[n].srce.ORIGIN         string     ORIGIN   keyword of the FITS header
+  str[n].srce.WAVELNTH       string     WAVELNTH keyword of the FITS header
+  str[n].srce.DATE_OBS       string     DATE_OBS keyword of the FITS header
+  str[n].srce.DATE_OBS_CSI   string     DATE_OBS UT: YYYY/MM/JJ HH:MM:SS  
+  str[n].srce.DATE_END       string     DATE_END keyword of the FITS header
+  str[n].srce.FILENAME       string     FILENAME keyword of the FITS header
+  str[n].srce.NAXIS1         integer    NAXIS1   keyword of the FITS header
+  str[n].srce.NAXIS2         integer    NAXIS2   keyword of the FITS header
+  str[n].srce.CDELT1         double     CDELT1   keyword of the FITS header
+  str[n].srce.CDELT2         double     CDELT2   keyword of the FITS header
+  str[n].srce.CRVAL1         double     CRVAL1   keyword of the FITS header
+  str[n].srce.CRVAL2         double     CRVAL2   keyword of the FITS header
+  str[n].srce.CENTER_X       double     CENTER_X keyword of the FITS header
+  str[n].srce.CENTER_Y       double     CENTER_Y keyword of the FITS header
+  str[n].srce.SOLAR_R        double     SOLAR_R  keyword of the FITS header
+  str[n].fil_index           integer    Index  of the filament in the segmented image
+  str[n].fil_ske_len_deg     double     Length of the skeleton in degrees
+  str[n].fil_ske_cen_hel     dblarr(2)  Center of the skeleton in heliogr coord (Lat/Lon)
+  str[n].fil_curvature       float      Index of ske curvature (from 0:line to 10:lake) 
+  str[n].fil_ske_chain_strt_arcs  dblarr(2)  Skeleton chain code first point coord.(arcs)
+  str[n].fil_ske_chain       string     Skeleton chain code
+  str[n].fil_bnd_chain_strt_arcs  dblarr(2)  Boundary chain code first point coord.(arcs)
+  str[n].fil_bnd_chain       string     Boundary chain code
+  str[n].fil_area_deg2       double     Filament area in deg^2
+  str[n].fil_area_pix        integer    Filament area in pixel^2
+  str[n].fil_centroi_hel     dblarr(2)  Filament centroid in heliographic coord.(Lat/Lon)
+  str[n].fil_elongatedness   double     Elongation factor area/(2d)^2 d=thickness 
+  str[n].fil_bndg_rect_arcs  dblarr(4)  Bounding rect. (arcsecs): Xstart,Xend,Ystart,Yend
+  str[n].fil_strength        integer    Strength indice from 1 to 10
+  str[n].fil_orientation     double     Orientation of the filament in deg. CCW from X0
+
+

@@ -1,0 +1,61 @@
+    FILAMENT DETECTION USING REGION GROWING (06/03/2003)
+
+
+  1.Image cleaning (limb fitting,...) 
+
+  2.Correct the luminosity across the image.
+    -An average background of the image is obtained by applying a
+     two-dimensional median filter with a width of 30. The resulting
+     image is then subtracted to the original (or divided).
+
+  3.Cleaning of dust pixels (and darkest lines removal).
+    -The image is convolved by a 3x3 filter with all values set to 1
+     except the center value which is set to 0 in order that the
+     values are replaced by the mean of their neighbourhood.
+    -The resulting image is divided by the original one so that the
+     dust pixels can be located by a treshold (p < 1-1/8 or p > 1+1/8).
+    -The pixels previously determined shouldn't be part of any
+     candidate filament. To avoid that, a lowest value is computed
+     from the mean and standard deviaton of the image and the
+     neighbourhood values of the candidate pixel are checked. If more
+     than 3/4 of them are below the treshold then the pixel is
+     considered to be part of a dark region which may be a filament.
+    -If not, the dust pixel value and it's 8-neighbourhood are replaced
+     by the median of a larger neighbourhood.
+
+  4.Seed points.
+    -A global treshold is computed from the image statistics:
+     T = mean - 3*standard dev. 
+    -The seed points could be found by tresholding the image with this
+     value, but in some cases the image is composed with regions showing
+     very different gradient, leading to many false seed detection.
+    -To deal with that, the morphological gradient of the contrast
+     enhanced image is computed and smoothed with a large median
+     filter (width=80). The final treshold is defined by a linear
+     combination of the global treshold and of the resulting image:
+     Tfinal = TGlobal - alpha*(result - mean(result)) 
+    -If the original image doesn't show this discontinuity it will
+     almost not affect the treshold.
+
+  5.Region growing
+    -An ellipse is fitted to every seed region previously found. From
+     the major axis length, a neighbourhood of the seed is defined. 
+    -The statistics of the region give the maximum value 
+     for the region growing function:max=mean(region)-1.4*stdev(region)
+     The minimum is the seed's minimum value.
+    -The final region size is checked and discarded if lower than 20
+     pixels.
+    -Before labeling a morphological closing operation is computed
+     to link up close blobs.
+
+  Note:
+
+    -The sunspots are also detected and a morphological discrimination 
+     is not enough to remove them, although some are discared by the
+     size criteria
+    -The region growing function can also be applied to the original 
+     image (instead of enhanced contrast one). The comparison with
+     Meudon synoptic maps may settle the question.
+    -The stripes across the image which are not removed lead to false
+     detection
+    

@@ -1,0 +1,24 @@
+% Compiled module: DMY2YMD.
+% Compiled module: FILE2TIME.
+% Compiled module: EXTRACT_FID.
+% Compiled module: EXTRACT_FIDS.
+ ----------------------------------
+| Could not find FIDs in all files |
+ ----------------------------------
+% Compiled module: STRSPECIAL.
+% Compiled module: STRLASTCHAR.
+% FILE2TIME: Expect at least YYMMDD[delimiter]HHMM...
+% Compiled module: TRIM.
+% ITOOL_GET_TIME: Assume current system time (20:32:15).
+% STR2UTC: Unrecognizable date format  [13T08:41:13/04/2002 20:32:15]
+% STRTRIM: Struct expression not allowed in this context: <STRUCT    Array[1]>.
+% Error occurred at: TRIM2              28 /usr/local/ssw/gen/idl/string/trim2.pro
+%                    Y2KFIX             44 /usr/local/ssw/gen/idl/time/y2kfix.pro
+%                    ITOOL_SET_CSI     109 /usr/local/ssw/gen/idl/image_tool/itool_set
+  _csi.pro
+%                    CONV_TAB            7 /home/fuller/IDL/FIL/conv_tab.pro
+%                    ROTATION           92 /home/fuller/IDL/FIL/rotation.pro
+%                    $MAIN$          
+% Execution halted at: CONV_TAB            7 /home/fuller/IDL/FIL/conv_tab.pro
+% Program caused arithmetic error: Floating underflow
+% Program caused arithmetic error: Floating illegal operand

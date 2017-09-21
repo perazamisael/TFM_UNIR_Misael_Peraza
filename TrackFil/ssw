@@ -1,0 +1,65 @@
+#!/bin/csh -f
+#
+# ncaon, 11-November-2014, 01-Jun-2017
+
+
+# --------------------------------------------------------------------------
+
+
+# NOTE: if lasco and/or secchi and/or festiva are included in SSW_INSTR, 
+# script may fail due to undefined variables SECCHI_LZ and QL_IMG. To fix
+# it, they may be defined with some dummy value before starting ssw.
+# setenv SECCHI_LZ " " ; setenv QL_IMG " " or the equivalent with "setenv"
+# in bash
+# Can't say whether and how this will affect usage of ssw.
+
+
+# --------------------------------------------------------------------------
+
+
+# Definition of environment variables 
+# ncaon 01-June-2017: Updated to use idl v8.5
+setenv SSW "/net/nas4/inves2/SSW/SSW"
+setenv SSWDB "/net/nas4/inves2/SSW/SSWDB"
+setenv IDL_DIR "/usr/pkg/rsi/idl85"
+
+
+# Define IDL license servers and ports
+setenv LM_LICENSE_FILE "1700@zuko"
+
+
+# This must be checked!
+# It seems that we need to define this variable if we
+# want colors to work in a 24-bit display
+# setenv ssw_nox 1
+
+
+# If too many packages are loaded, startup may abort with message:
+# word too long.
+if ( $?SSW_INSTR ) then
+  echo " You have set the variable SSW_INSTR as: $SSW_INSTR"
+  echo " Loading packages: $SSW_INSTR"
+else  
+  echo " "
+  echo " Environment variable SSW_INSTR not defined."
+  echo " If you want to load  your own set of packages, first define the"
+  echo " environment variable SSW_INSTR, following the example below:"
+  echo ' setenv SSW_INSTR "eis sot xrt"  (tcsh)'
+  echo ' setenv SSW_INSTR="eis sot xrt"  (bash)'
+  echo " "
+  echo " You can also load further packages from the IDL prompt: "
+  echo " ssw_path, /xxx, /yyy   [replace xxx, yyy by the actual package names]"
+  echo " "
+  echo 'To start ssw in IDE (graphical) mode, type "sswde" instead'
+  echo " "
+endif
+
+
+source $SSW/gen/setup/setup.ssw
+
+echo "Arguments:" $1
+# start SSWIDL - command line mode
+sswidl $1
+
+
+# --------------------------------------------------------------------------

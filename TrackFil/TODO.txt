@@ -1,0 +1,11 @@
+TODO list de TRACKFIL sur siolino.obspm.fr
+X.Bonnin, 20-JAN-2012
+
+* Relancer le code d'entrainement de TRACKFIL
+  afin de determiner le nouveau meilleur jeux de parametres 
+  (a0,d0,theta0,dt0) en tenant compte des petits filaments.
+
+* Automatiser l'execution du code sur siolino.
+
+* Ajouter tracking filaments colimbra (a part)
+
