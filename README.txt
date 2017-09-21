@@ -1,3 +1,6 @@
+Lo que he hecho ha sido blah, blah, blah
+
+
 ####################### README #############################
 
 
